@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Village Saloon</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap');
+*{box-sizing:border-box}html,body{margin:0;background:#120b07;color:#f5ead6;font-family:"Noto Sans Devanagari",sans-serif}
+.hero{min-height:100vh;position:relative;background:linear-gradient(180deg,#0002,#0004 45%,#120b07 92%),url("village-saloon.jpg") center/cover fixed;display:flex;align-items:flex-end}
+.hero:after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.1;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.8' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.top{position:absolute;z-index:2;top:18px;left:18px;right:18px;display:flex;justify-content:space-between;gap:10px}.pill{padding:8px 12px;border:1px solid #f5ead633;border-radius:99px;background:#140b0866;backdrop-filter:blur(10px);font-size:11px;letter-spacing:1.5px}.online{font-size:11px;display:flex;gap:7px;align-items:center}.dot{width:8px;height:8px;border-radius:50%;background:#7bd56a;box-shadow:0 0 12px #7bd56a}
+.content{position:relative;z-index:1;padding:30px 22px 155px;width:min(900px,100%)}.small{font-size:12px;letter-spacing:3px;opacity:.8}.title{font:clamp(65px,15vw,150px)/.76 "DM Serif Display",serif;letter-spacing:-4px;text-transform:uppercase;margin:18px 0}.mr{font-size:clamp(17px,4vw,28px);font-weight:600}.quote{max-width:620px;min-height:54px;margin-top:20px;line-height:1.8;font-size:14px;opacity:.85}
+.player{position:fixed;z-index:9;left:12px;right:12px;bottom:12px;padding:13px;border:1px solid #f5ead625;border-radius:24px;background:#21130dcc;backdrop-filter:blur(18px);box-shadow:0 15px 45px #0008}.row{display:flex;align-items:center;gap:11px}.cover{width:50px;height:50px;object-fit:cover;border-radius:12px}.info{flex:1;min-width:0}.info b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:13px}.info span{font-size:10px;opacity:.6}.controls{display:flex;gap:2px;align-items:center}.controls button{border:0;background:transparent;color:#f5ead6;font-size:20px;padding:6px;cursor:pointer}.play{width:45px;height:45px;border-radius:50%;background:#f5ead6!important;color:#21130d!important}.bar{height:3px;background:#fff2;margin-top:9px;border-radius:99px;overflow:hidden}.bar i{display:block;width:0;height:100%;background:#f5ead6}.yt{position:fixed;width:1px;height:1px;left:-10px;top:-10px;opacity:.01;pointer-events:none}
+@media(max-width:600px){.content{padding-bottom:155px}.pill{font-size:9px}.title{font-size:72px}}
+</style>
+</head>
+<body>
+<section class="hero">
+<div class="top"><div class="pill">EST. 1990s · VILLAGE MEMORIES</div><div class="online"><i class="dot"></i><span id="online">47</span> online</div></div>
+<main class="content">
+<div class="small">केस कटिंग · गप्पा · आठवणी</div>
+<div class="title">Village<br>Saloon</div>
+<div class="mr">केस कटिंग आणि गप्पांचा अड्डा</div>
+<div class="quote" id="quote">“पाच रुपयांची कटिंग… पण आठवणी अमूल्य.”</div>
+</main>
+</section>
+
+<div id="player" class="yt"></div>
+<div class="player">
+<div class="row">
+<img class="cover" src="village-saloon.jpg" alt="">
+<div class="info"><b id="track">BARBER SONGS — 90's Bollywood Songs Collection</b><span id="state">YouTube · Village Saloon</span></div>
+<div class="controls"><button onclick="prev()">⏮</button><button class="play" id="play" onclick="toggle()">▶</button><button onclick="next()">⏭</button></div>
+</div><div class="bar"><i id="bar"></i></div>
+</div>
+
+<script src="https://www.youtube.com/iframe_api"></script>
+<script>
+let yt,ready=false,playing=false;
+const videoId="uIYFObB-yv0";
+const quotes=[
+"“पाच रुपयांची कटिंग… पण आठवणी अमूल्य.”",
+"“वडाच्या झाडाखाली बसलं की गावातली सगळी बातमी कळायची.”",
+"“सलून म्हणजे फक्त केस कापायची जागा नव्हती; तो गावाचा चौक होता.”",
+"“आरशात चेहरा दिसायचा, आणि समोर गावाची दुनिया.”"
+];
+function onYouTubeIframeAPIReady(){
+ yt=new YT.Player('player',{height:'1',width:'1',videoId,playerVars:{playsinline:1,controls:0,rel:0},events:{onReady:()=>ready=true,onStateChange:e=>{
+   if(e.data===YT.PlayerState.ENDED){
+     yt.seekTo(0,true);
+     yt.playVideo();
+   }
+   playing=e.data===YT.PlayerState.PLAYING;
+   document.getElementById('play').textContent=playing?'Ⅱ':'▶';
+   document.getElementById('state').textContent=playing?'Playing on YouTube':'YouTube · Village Saloon';
+ }}});
+}
+function toggle(){if(!ready)return alert("YouTube player अजून load होत आहे."); playing?yt.pauseVideo():yt.playVideo()}
+function prev(){if(ready)yt.seekTo(0,true)}
+function next(){if(ready)yt.seekTo(0,true)}
+setInterval(()=>{
+ if(ready && yt.getCurrentTime){
+   const d=yt.getDuration()||1,t=yt.getCurrentTime()||0;
+   document.getElementById('bar').style.width=(t/d*100)+"%";
+ }
+},250);
+let q=0;setInterval(()=>{q=(q+1)%quotes.length;document.getElementById('quote').textContent=quotes[q]},4000);
+setInterval(()=>document.getElementById('online').textContent=40+Math.floor(Math.random()*20),5000);
+document.addEventListener('keydown',e=>{if(e.code==="Space"){e.preventDefault();toggle()}});
+</script>
+</body></html>
